@@ -14,5 +14,5 @@ pub enum Error {
     #[error("Session is required.")]
     Session,
     #[error("Smite API error: {0}")]
-    SmiteApi(String)
+    SmiteApi(String),
 }
