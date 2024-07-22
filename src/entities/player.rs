@@ -147,7 +147,7 @@ impl Client {
     ///
     /// fn example() -> Result<()> {
     ///    let mut client = Client::new("dev_id".to_string(), "auth_key".to_string());
-    ///    let player = client.get_player("my_player")?[0]; // API may return multiple players.
+    ///    let player = &client.get_player("my_player")?[0]; // API may return multiple players.
     ///    Ok(())
     /// }
     pub fn get_player(&mut self, player_name: &str) -> Result<Vec<Player>> {

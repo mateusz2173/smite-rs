@@ -1,6 +1,6 @@
 [package]
 name = "smite"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 description = "Library for interacting with the Smite API"
 authors = ["Mateusz Burdyna"]
