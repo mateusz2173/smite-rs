@@ -142,8 +142,8 @@ impl Client {
     ///
     /// # Examples
     /// ```
-    /// use hirez::Client;
-    /// use hirez::error::Result;
+    /// use smite::client::Client;
+    /// use smite::error::Result;
     ///
     /// fn example() -> Result<()> {
     ///    let mut client = Client::new("dev_id".to_string(), "auth_key".to_string());
