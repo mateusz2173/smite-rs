@@ -12,7 +12,7 @@ In order to use the Smite API, you will need to obtain a **dev-id** and **auth-k
 use smite::client::Client;
 
 fn main() {
-    let mut client = Client::new("my-dev-id".to_string(), "my-auth-key".to_string());
+    let client = Client::new("my-dev-id".to_string(), "my-auth-key".to_string());
     let player_name = "player-name";
 
     // API may return multiple players with the same name
@@ -38,7 +38,7 @@ fn main() {
     let dev_id = "my-dev-id";
     let auth_key = "my-auth-key";
 
-    let mut client = Client::new(dev_id.to_string(), auth_key.to_string());
+    let client = Client::new(dev_id.to_string(), auth_key.to_string());
     let res: Value = client.make_request("gettopmatches", true, &[]).unwrap();
 
     // ...

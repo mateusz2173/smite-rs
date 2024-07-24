@@ -7,7 +7,7 @@
 //! use smite::error::Result;
 //!
 //! fn example() -> Result<()> {
-//!     let mut client = Client::new("your_developer_id".to_string(), "your_auth_key".to_string());
+//!     let client = Client::new("your_developer_id".to_string(), "your_auth_key".to_string());
 //!     let motds = client.get_motds()?;
 //!     for motd in motds {
 //!         println!("Motd {} at {:?}", motd.title, motd.start_date_time);

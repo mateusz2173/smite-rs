@@ -146,7 +146,7 @@ impl Client {
     /// use smite::error::Result;
     ///
     /// fn example() -> Result<()> {
-    ///    let mut client = Client::new("dev_id".to_string(), "auth_key".to_string());
+    ///    let client = Client::new("dev_id".to_string(), "auth_key".to_string());
     ///    let player = &client.get_player("my_player")?[0]; // API may return multiple players.
     ///    Ok(())
     /// }
