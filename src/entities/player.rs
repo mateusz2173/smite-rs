@@ -150,7 +150,7 @@ impl Client {
     ///    let player = &client.get_player("my_player")?[0]; // API may return multiple players.
     ///    Ok(())
     /// }
-    pub fn get_player(&mut self, player_name: &str) -> Result<Vec<Player>> {
+    pub fn get_player(&self, player_name: &str) -> Result<Vec<Player>> {
         self.make_request("getplayer", true, &[player_name.to_string()])
     }
 }

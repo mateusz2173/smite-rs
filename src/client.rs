@@ -1,3 +1,5 @@
+use std::sync::Mutex;
+
 use crate::entities::session::Session;
 use crate::error::Error;
 use crate::error::Result;
@@ -9,7 +11,7 @@ const BASE_URL: &str = "https://api.smitegame.com/smiteapi.svc";
 pub struct Client {
     dev_id: String,
     auth_key: String,
-    session: Option<Session>,
+    session: Mutex<Option<Session>>,
 }
 
 impl Client {
@@ -18,7 +20,7 @@ impl Client {
         Client {
             dev_id,
             auth_key,
-            session: None,
+            session: Mutex::new(None),
         }
     }
 
@@ -31,7 +33,7 @@ impl Client {
     /// Returns an error if the request fails or if the response cannot be parsed.
     #[allow(clippy::missing_panics_doc)]
     pub fn make_request<T>(
-        &mut self,
+        &self,
         method: &str,
         requires_session: bool,
         additional_args: &[String],
@@ -44,8 +46,7 @@ impl Client {
         let timestamp = current_timestamp();
 
         let mut endpoint = if requires_session {
-            let session = self.ensure_session()?;
-            let session_id = &session.id;
+            let session_id = self.ensure_session()?;
             format!("{BASE_URL}/{method}Json/{dev_id}/{signature}/{session_id}/{timestamp}")
         } else {
             format!("{BASE_URL}/{method}Json/{dev_id}/{signature}/{timestamp}")
@@ -69,7 +70,7 @@ impl Client {
         serde_json::from_str::<T>(&response).map_err(Error::Parsing)
     }
 
-    pub(crate) fn request_session(&mut self) -> Result<Session> {
+    pub(crate) fn request_session(&self) -> Result<Session> {
         let val: Value = self.make_request("createsession", false, &[])?;
 
         let ret_msg = val
@@ -96,21 +97,16 @@ impl Client {
         format!("{hash:?}")
     }
 
-    fn ensure_session(&mut self) -> Result<&Session> {
-        if self.session.is_none()
-            || self
-                .session
-                .as_ref()
-                .is_some_and(|session| !session.is_alive())
-        {
-            self.session = Some(self.request_session()?);
+    fn ensure_session(&self) -> Result<String> {
+        let mut session = self.session.lock().unwrap();
+        if session.is_none() || session.as_ref().is_some_and(|session| !session.is_alive()) {
+            *session = Some(self.request_session()?);
         }
 
-        if let Some(session) = self.session.as_ref() {
-            Ok(session)
-        } else {
-            Err(Error::Session)
-        }
+        session
+            .as_ref()
+            .map(|session| session.id.clone())
+            .ok_or(Error::Session)
     }
 }
 

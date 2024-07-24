@@ -39,7 +39,7 @@ impl Client {
     ///
     /// # Errors
     /// Returns an error if the request fails or if the response cannot be parsed.
-    pub fn get_data_used(&mut self) -> Result<Vec<SessionInfo>> {
+    pub fn get_data_used(&self) -> Result<Vec<SessionInfo>> {
         self.make_request("getdataused", true, &[])
     }
 }
