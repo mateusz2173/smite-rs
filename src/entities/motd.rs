@@ -40,23 +40,23 @@ impl Client {
 }
 
 impl MatchOfTheDay {
-    /// Returns the description of the Match-of-the-Day and the vector of match properties
-    /// such as cooldown, map, starting god etc.
+    /// API returns the description as a single string with '<li>' tags.
+    /// This method return a vector of strings by separating the description by '<li>' tags.
     #[must_use]
     #[allow(clippy::missing_panics_doc)]
-    pub fn separate_description(&self) -> (Option<&str>, Vec<&str>) {
-        let traits = regex::Regex::new(r"<li>(.*?)</li>").expect("Couldn't parse regex");
-        let desc = regex::Regex::new(r"^(.*?)<li>").expect("Couldn't parse regex");
+    pub fn separate_description(&self) -> Vec<&str> {
+        if !self.description.contains("<li>") {
+            return vec![&self.description];
+        }
 
-        let description = desc
-            .captures(&self.description)
-            .map(|m| m.get(1).unwrap().as_str());
+        let traits = regex::Regex::new(r"(<li>)?(.*?)</?li>").expect("Couldn't parse regex");
 
         let props: Vec<&str> = traits
             .captures_iter(&self.description)
-            .map(|m| m.get(1).unwrap().as_str())
+            .map(|m| m.get(2).unwrap().as_str())
+            .filter(|s| s.len() > 3)
             .collect();
 
-        (description, props)
+        props
     }
 }
