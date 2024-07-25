@@ -1,6 +1,6 @@
 [package]
 name = "smite"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 description = "Library for interacting with the Smite API"
 authors = ["Mateusz Burdyna"]
@@ -12,6 +12,7 @@ keywords = ["smite", "api", "wrapper", "hirez", "game"]
 categories = ["api-bindings"]
 
 [dependencies]
+async-mutex = "1.4.0"
 chrono = { version = "0.4.38", features = ["serde"] }
 md5 = "0.7.0"
 regex = "1.10.5"

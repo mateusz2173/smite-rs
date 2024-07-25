@@ -6,9 +6,9 @@
 //! use smite::client::Client;
 //! use smite::error::Result;
 //!
-//! fn example() -> Result<()> {
+//! async fn example() -> Result<()> {
 //!     let client = Client::new("your_developer_id".to_string(), "your_auth_key".to_string());
-//!     let motds = client.get_motds()?;
+//!     let motds = client.get_motds().await?;
 //!     for motd in motds {
 //!         println!("Motd {} at {:?}", motd.title, motd.start_date_time);
 //!     }

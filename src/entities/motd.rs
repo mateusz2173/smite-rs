@@ -34,8 +34,8 @@ impl Client {
     ///
     /// # Errors
     /// Returns an error if the request fails or if the response cannot be parsed.
-    pub fn get_motds(&self) -> Result<Vec<MatchOfTheDay>> {
-        self.make_request("getmotd", true, &[])
+    pub async fn get_motds(&self) -> Result<Vec<MatchOfTheDay>> {
+        self.make_request("getmotd", true, &[]).await
     }
 }
 

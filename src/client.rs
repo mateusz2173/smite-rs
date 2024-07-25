@@ -1,4 +1,4 @@
-use std::sync::Mutex;
+use async_mutex::Mutex;
 
 use crate::entities::session::Session;
 use crate::error::Error;
@@ -32,7 +32,7 @@ impl Client {
     /// # Errors
     /// Returns an error if the request fails or if the response cannot be parsed.
     #[allow(clippy::missing_panics_doc)]
-    pub fn make_request<T>(
+    pub async fn make_request<T>(
         &self,
         method: &str,
         requires_session: bool,
@@ -46,7 +46,7 @@ impl Client {
         let timestamp = current_timestamp();
 
         let mut endpoint = if requires_session {
-            let session_id = self.ensure_session()?;
+            let session_id = self.ensure_session().await?;
             format!("{BASE_URL}/{method}Json/{dev_id}/{signature}/{session_id}/{timestamp}")
         } else {
             format!("{BASE_URL}/{method}Json/{dev_id}/{signature}/{timestamp}")
@@ -56,7 +56,14 @@ impl Client {
             endpoint.push_str(&format!("/{arg}"));
         }
 
-        let response = reqwest::blocking::get(endpoint)?.text()?;
+        self._make_request(&endpoint).await
+    }
+
+    async fn _make_request<T>(&self, endpoint: &str) -> Result<T>
+    where
+        for<'a> T: Deserialize<'a>,
+    {
+        let response = reqwest::get(endpoint).await?.text().await?;
 
         if response.starts_with('<') {
             let re = regex::Regex::new(r"<p>(.*)</p>").unwrap();
@@ -70,8 +77,15 @@ impl Client {
         serde_json::from_str::<T>(&response).map_err(Error::Parsing)
     }
 
-    pub(crate) fn request_session(&self) -> Result<Session> {
-        let val: Value = self.make_request("createsession", false, &[])?;
+    pub(crate) async fn request_session(&self) -> Result<Session> {
+        let endpoint = format!(
+            "{BASE_URL}/createsessionJson/{dev_id}/{signature}/{timestamp}",
+            BASE_URL = BASE_URL,
+            dev_id = self.dev_id,
+            signature = self.signature("createsession"),
+            timestamp = current_timestamp()
+        );
+        let val: Value = self._make_request(&endpoint).await?;
 
         let ret_msg = val
             .get("ret_msg")
@@ -97,16 +111,15 @@ impl Client {
         format!("{hash:?}")
     }
 
-    fn ensure_session(&self) -> Result<String> {
-        let mut session = self.session.lock().unwrap();
+    async fn ensure_session(&self) -> Result<String> {
+        let mut session = self.session.lock().await;
         if session.is_none() || session.as_ref().is_some_and(|session| !session.is_alive()) {
-            *session = Some(self.request_session()?);
+            *session = Some(self.request_session().await?);
         }
 
-        session
-            .as_ref()
-            .map(|session| session.id.clone())
-            .ok_or(Error::Session)
+        let id = session.as_ref().map(|session| session.id.clone());
+
+        id.ok_or(Error::Session)
     }
 }
 

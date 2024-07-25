@@ -145,12 +145,14 @@ impl Client {
     /// use smite::client::Client;
     /// use smite::error::Result;
     ///
-    /// fn example() -> Result<()> {
+    /// async fn example() -> Result<()> {
     ///    let client = Client::new("dev_id".to_string(), "auth_key".to_string());
-    ///    let player = &client.get_player("my_player")?[0]; // API may return multiple players.
+    ///    let player = &client.get_player("my_player").await?[0]; // API may return multiple players.
+    ///
     ///    Ok(())
     /// }
-    pub fn get_player(&self, player_name: &str) -> Result<Vec<Player>> {
+    pub async fn get_player(&self, player_name: &str) -> Result<Vec<Player>> {
         self.make_request("getplayer", true, &[player_name.to_string()])
+            .await
     }
 }

@@ -11,17 +11,19 @@ In order to use the Smite API, you will need to obtain a **dev-id** and **auth-k
 ```rust
 use smite::client::Client;
 
-fn main() {
+async fn example() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::new("my-dev-id".to_string(), "my-auth-key".to_string());
     let player_name = "player-name";
 
     // API may return multiple players with the same name
-    let player_info = &client.get_player(player_name).unwrap()[0];
+    let player_info = &client.get_player(player_name).await?[0];
 
     println!(
         "Player {player_name} played for {} hours.",
         player_info.hours_played
     );
+
+    Ok(())
 }
 ```
 
@@ -34,15 +36,17 @@ In this case you can use `Client::make_request` method to make custom requests.
 use serde_json::Value;
 use smite::client::Client;
 
-fn main() {
+async fn example() -> Result<(), Box<dyn std::error::Error>> {
     let dev_id = "my-dev-id";
     let auth_key = "my-auth-key";
 
     let client = Client::new(dev_id.to_string(), auth_key.to_string());
-    let res: Value = client.make_request("gettopmatches", true, &[]).unwrap();
+    let res: Value = client.make_request("gettopmatches", true, &[]).await?;
 
     // ...
     // Or if you want to use custom struct make sure it implements `serde_json::Deserialize`
-    // let response: MyCustomStruct = client.make_request("gettopmatches", true, &[]).unwrap();
+    // let response: MyCustomStruct = client.make_request("gettopmatches", true, &[]).await?;
+
+    Ok(())
 }
 ```
