@@ -25,7 +25,7 @@ pub struct Player {
     pub losses: u32,
     #[serde(rename = "MasteryLevel")]
     pub mastery_level: u32,
-    #[serde(rename = "MergedPlayers", default)]
+    #[serde(rename = "MergedPlayers")]
     pub merged_players: Option<Vec<Merged>>,
     #[serde(rename = "MinutesPlayed")]
     pub minutes_played: u32,
@@ -152,7 +152,7 @@ impl Client {
     ///    Ok(())
     /// }
     pub async fn get_player(&self, player_name: &str) -> Result<Vec<Player>> {
-        self.make_request("getplayer", true, &[player_name.to_string()])
-            .await
+        self.make_request("getplayer", true, &[player_name]).await
     }
 }
+

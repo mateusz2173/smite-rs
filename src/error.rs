@@ -15,4 +15,9 @@ pub enum Error {
     Session,
     #[error("Smite API error: {0}")]
     SmiteApi(String),
+    #[error("Incorrect argument: {given}, expected: {expected}")]
+    InvalidArgument {
+        given: String,
+        expected: String
+    }
 }

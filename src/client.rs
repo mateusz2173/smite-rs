@@ -36,7 +36,7 @@ impl Client {
         &self,
         method: &str,
         requires_session: bool,
-        additional_args: &[String],
+        additional_args: &[&str],
     ) -> Result<T>
     where
         for<'a> T: Deserialize<'a>,
