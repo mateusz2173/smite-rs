@@ -94,10 +94,6 @@ impl Client {
     ) -> Result<Vec<PlayerGameInfo>> {
         let match_ids: Vec<String> = match_ids.iter().map(ToString::to_string).collect();
 
-        let f: Value = self.make_request("getmatchdetailsbatch", true, &[&match_ids.join(",")])
-            .await?;
-        dbg!(&f);
-
         self.make_request("getmatchdetailsbatch", true, &[&match_ids.join(",")])
             .await
     }

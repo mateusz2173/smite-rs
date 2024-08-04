@@ -155,4 +155,3 @@ impl Client {
         self.make_request("getplayer", true, &[player_name]).await
     }
 }
-
