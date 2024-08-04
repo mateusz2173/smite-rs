@@ -257,7 +257,7 @@ pub struct PlayerGameInfo {
     #[serde(rename = "hz_gamer_tag")]
     pub hz_gamer_tag: Option<String>,
     #[serde(rename = "hz_player_name")]
-    pub hz_player_name: String,
+    pub hz_player_name: Option<String>,
     #[serde(rename = "match_queue_id")]
     pub match_queue_id: u32,
     #[serde(rename = "name")]
