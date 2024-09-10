@@ -10,6 +10,7 @@ use crate::error::{Error, Result};
 
 use super::player::Player;
 
+#[derive(Debug, Clone)]
 pub enum Queue {
     Assault,
     Arena,
